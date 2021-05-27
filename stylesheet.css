@@ -42,3 +42,8 @@ body {
   position: relative;
   text-align: center;
 }
+
+.key--equal {
+  grid-column: -2;
+  grid-row: 2 / span 4;
+}
