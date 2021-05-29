@@ -9,6 +9,9 @@ keys.addEventListener('click', e => {
     const keyContent = key.textContent
     const showNum = display.textContent
     const previousKeyType = calculator.dataset.previousKeyType
+
+    Array.from(key.parentNode.children)
+      .forEach(k => k.classList.remove('is-pressed'))
     
     //replace 0 with clicked key
     if(!action) {
@@ -17,6 +20,7 @@ keys.addEventListener('click', e => {
       } else {
         display.textContent = showNum + keyContent
       }
+      calculator.dataset.previousKeyType = 'number'
     }
 
     if(
@@ -25,26 +29,61 @@ keys.addEventListener('click', e => {
       action === 'multiply' ||
       action === 'divide' 
     ) {
+      const firstVal = calculator.dataset.firstVal
+      const operator = calculator.dataset.operator
+      const secondVal = showNum
+  
+      if (firstVal && 
+          operator &&
+          previousKeyType !== 'operator'
+        ) {
+        display.textContent = operate(firstVal, operator, secondVal)  
+      }
       key.classList.add('is-pressed')
       calculator.dataset.previousKeyType = 'operator'
       calculator.dataset.firstVal = showNum
       calculator.dataset.operator = action
+    
     }
 
     if (action === 'clear') {
       console.log('clear key!')
+      calculator.dataset.previousKeyType = 'clear'
     }
 
     if (action === 'operate') {
+      const firstVal = calculator.dataset.firstVal
+      const operator = calculator.dataset.operator
       const secondVal = showNum
+
+      display.textContent = operate(firstVal, operator, secondVal)
     }
 
     if (action === 'decimal'){
-      display.textContent = showNum + '.'
+      if (!showNum.includes('.')){
+        display.textContent = showNum + '.'
+      }
+      calculator.dataset.previousKeyType = 'decimal'
     }
+
   }
 })
 
+
+const operate = (x, operator, y) => {
+  let result = ''
+
+  if (operator === 'add') {
+    result = parseFloat(x) + parseFloat(y)
+  } else if (operator === 'subtract') {
+    result = parseFloat(x) - parseFloat(y)
+  } else if (operator === 'multiply') {
+    result = parseFloat(x) * parseFloat(y)
+  } else if (operator === 'divide') {
+    result = parseFloat(x) / parseFloat(y)
+  }
+   return result
+}
 
 // function add (x,y) {
 //   return x + y;
@@ -67,18 +106,3 @@ keys.addEventListener('click', e => {
 // // console.log(divide(20,10));
 
 
-
-function operate(x, operator, y) {
-  let result = ''
-
-  if (operator === 'add') {
-    result = parseFloat(x) + parseFloat(y)
-  } else if (operator === 'subtract') {
-    result = parseFloat(x) - parseFloat(y)
-  } else if (operator === 'multiply') {
-    result = parseFloat(x) * parseFloat(y)
-  } else if (operator === 'divide') {
-    result = parseFloat(x) / parseFloat(y)
-  }
-   return result
-}
